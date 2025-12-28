@@ -44,22 +44,33 @@ const AppRoot = () => {
 
     // Effect to check TMB status - independent of API initialization
     useEffect(() => {
+        console.log('[AppRoot] Starting TMB status check...');
+        const safetyTimeout = setTimeout(() => {
+            if (!is_tmb_check_complete) {
+                console.warn('[AppRoot] TMB check safety timeout reached');
+                setIsTmbCheckComplete(true);
+            }
+        }, 3000);
+
         const checkTmbStatus = async () => {
             try {
                 const tmb_status = await isTmbEnabled();
                 const final_status = tmb_status || window.is_tmb_enabled === true;
+                console.log('[AppRoot] TMB status determined:', final_status);
 
                 setIsTmbEnabled(final_status);
-
                 setIsTmbCheckComplete(true);
+                clearTimeout(safetyTimeout);
             } catch (error) {
-                console.error('TMB check failed:', error);
+                console.error('[AppRoot] TMB check failed:', error);
                 setIsTmbCheckComplete(true);
+                clearTimeout(safetyTimeout);
             }
         };
 
         checkTmbStatus();
-    }, []);
+        return () => clearTimeout(safetyTimeout);
+    }, [isTmbEnabled, is_tmb_check_complete]);
 
     // Initialize API when TMB check is complete with timeout fallback
     useEffect(() => {

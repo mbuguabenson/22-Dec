@@ -3,10 +3,10 @@ import { isStaging } from '../url/helpers';
 
 export const APP_IDS = {
     LOCALHOST: 114784,
-    TMP_STAGING: 114784,
-    STAGING: 114784,
-    STAGING_BE: 114784,
-    STAGING_ME: 114784,
+    TMP_STAGING: 117122,
+    STAGING: 117122,
+    STAGING_BE: 117122,
+    STAGING_ME: 117122,
     PRODUCTION: 114784,
     PRODUCTION_BE: 114784,
     PRODUCTION_ME: 114784,
@@ -23,6 +23,7 @@ export const domain_app_ids = {
     'dbot.deriv.com': APP_IDS.PRODUCTION,
     'dbot.deriv.be': APP_IDS.PRODUCTION_BE,
     'dbot.deriv.me': APP_IDS.PRODUCTION_ME,
+    '22-dec.vercel.app': 117122,
 };
 
 export const getCurrentProductionDomain = () =>
@@ -124,9 +125,8 @@ export const checkAndSetEndpointFromUrl = () => {
             const params = url_params.toString();
             const hash = location.hash;
 
-            location.href = `${location.protocol}//${location.hostname}${location.pathname}${
-                params ? `?${params}` : ''
-            }${hash || ''}`;
+            location.href = `${location.protocol}//${location.hostname}${location.pathname}${params ? `?${params}` : ''
+                }${hash || ''}`;
 
             return true;
         }

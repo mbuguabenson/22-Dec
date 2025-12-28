@@ -296,8 +296,10 @@ const useTMB = (): UseTMBReturn => {
                 // Pre-fetch active sessions if needed
                 if (!isCallbackPage && window.is_tmb_enabled) {
                     try {
+                        console.log('[TMB] Pre-fetching active sessions...');
                         // This is a critical step - we need to await this
                         const activeSessions = await getActiveSessions();
+                        console.log('[TMB] Active sessions pre-fetched:', activeSessions?.active);
                         activeSessionsRef.current = activeSessions;
 
                         // Process tokens in advance if available
@@ -320,6 +322,7 @@ const useTMB = (): UseTMBReturn => {
                 }
 
                 // Only after all operations are complete, mark as initialized
+                console.log('[TMB] Initialization complete');
                 setIsInitialized(true);
                 setIsTmbCheckComplete(true);
 

@@ -114,10 +114,12 @@ export const AuthWrapper = () => {
 
     React.useEffect(() => {
         const initializeAuth = async () => {
+            console.log('[AuthWrapper] Initializing auth...');
             try {
                 // Pass isOnline to setLocalStorageToken to handle offline mode properly
                 await setLocalStorageToken(loginInfo, paramsToDelete, setIsAuthComplete, isOnline);
                 URLUtils.filterSearchParams(['lang']);
+                console.log('[AuthWrapper] Auth initialization complete');
                 setIsAuthComplete(true);
             } catch (error) {
                 console.error('[Auth] Authentication initialization failed:', error);
