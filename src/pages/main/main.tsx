@@ -152,7 +152,12 @@ const AppWrapper = observer(() => {
         );
         if (el_dashboard) observer_dashboard.observe(el_dashboard);
         if (el_tutorial) observer_tutorial.observe(el_tutorial);
-    });
+
+        return () => {
+            observer_dashboard.disconnect();
+            observer_tutorial.disconnect();
+        };
+    }, [setLeftTabShadow, setRightTabShadow]);
 
     React.useEffect(() => {
         if (connectionStatus !== CONNECTION_STATUS.OPENED) {

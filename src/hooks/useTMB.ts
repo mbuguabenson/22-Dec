@@ -61,12 +61,14 @@ const useTMB = (): UseTMBReturn => {
     const isTMBSupportedDomain = useMemo(() => {
         const hostname = window.location.hostname;
         const supportedDomains = ['deriv.com', 'deriv.be', 'deriv.me', 'deriv.dev', 'localhost'];
-        const isSupported = supportedDomains.some(domain => hostname.includes(domain));
-        if (!isSupported) {
-            console.log(`[TMB] Domain ${hostname} not supported for TMB, will use standard OAuth2`);
-        }
-        return isSupported;
+        return supportedDomains.some(domain => hostname.includes(domain));
     }, []);
+
+    useEffect(() => {
+        if (!isTMBSupportedDomain) {
+            console.log(`[TMB] Domain ${window.location.hostname} not supported for TMB, will use standard OAuth2`);
+        }
+    }, [isTMBSupportedDomain]);
 
     const is_staging = useMemo(() => window.location.hostname.includes('staging'), []);
     const is_production = useMemo(() => !is_staging, [is_staging]);
@@ -185,17 +187,17 @@ const useTMB = (): UseTMBReturn => {
     const tmbStatusPromiseRef = useRef<Promise<boolean> | null>(null);
 
     const isTmbEnabled = useCallback(async () => {
+        // If we've already determined the status, return the cached value
+        if (tmbStatusDeterminedRef.current) {
+            return window.is_tmb_enabled === true;
+        }
+
         // If domain doesn't support TMB, return false immediately
         if (!isTMBSupportedDomain) {
             window.is_tmb_enabled = false;
             setIsTmbEnabled(false);
             tmbStatusDeterminedRef.current = true;
             return false;
-        }
-
-        // If we've already determined the status, return the cached value
-        if (tmbStatusDeterminedRef.current) {
-            return window.is_tmb_enabled === true;
         }
 
         // If we're already in the process of determining the status, wait for that promise
@@ -270,7 +272,9 @@ const useTMB = (): UseTMBReturn => {
     // Initialize the hook and check TMB status - only run once
     useEffect(() => {
         if (TMBState.isInitialized) {
-            return; // Only run initialization once
+            setIsInitialized(true);
+            setIsTmbCheckComplete(true);
+            return; // Only run full initialization once
         }
 
         TMBState.isInitialized = true;
