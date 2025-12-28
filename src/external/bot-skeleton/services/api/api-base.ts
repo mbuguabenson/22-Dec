@@ -112,8 +112,7 @@ class APIBase {
 
             // DEBUG: Add direct event listeners to debug connection stability
             if (this.api?.connection) {
-                this.api.connection.addEventListener('error', (e: any) => console.error('[API-DEBUG] Socket Error:', e));
-                this.api.connection.addEventListener('message', (e: any) => console.log('[API-DEBUG] Socket Message (snippet):', typeof e.data === 'string' ? e.data.substring(0, 50) : 'binary'));
+                // connection listeners removed for performance
             }
         }
 

@@ -34,10 +34,22 @@ const ErrorComponentWrapper = observer(() => {
     );
 });
 
-const AppRoot = () => {
+const AppRoot = observer(() => {
     const store = useStore();
+    const { ui } = store;
+    const { is_dark_mode_on } = ui;
+
+    useEffect(() => {
+        const themeClass = is_dark_mode_on ? 'theme--dark' : 'theme--light';
+        document.body.classList.remove('theme--light', 'theme--dark');
+        document.body.classList.add(themeClass);
+    }, [is_dark_mode_on]);
+
+    // ... existing initialization logic ...
     const api_base_initialized = useRef(false);
     const [is_api_initialized, setIsApiInitialized] = useState(false);
+
+    // ... rest of component ...
     const [is_tmb_check_complete, setIsTmbCheckComplete] = useState(false);
     const [, setIsTmbEnabled] = useState(false);
     const { isTmbEnabled } = useTMB();
@@ -113,6 +125,6 @@ const AppRoot = () => {
             </ErrorBoundary>
         </Suspense>
     );
-};
+});
 
 export default AppRoot;
