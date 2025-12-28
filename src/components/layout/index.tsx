@@ -24,6 +24,7 @@ interface IClientAccount {
 }
 
 const Layout = observer(() => {
+    console.log('[Layout] Rendering started');
     const { isDesktop } = useDevice();
     const { isOnline } = useOfflineDetection();
     const store = useStore();
@@ -167,6 +168,13 @@ const Layout = observer(() => {
             setClientHasCurrency(true); // Allow access in offline mode
             return;
         }
+
+        console.log('[Layout] Starting authentication check...', {
+            isLoggedInCookie,
+            isClientAccountsPopulated,
+            clientHasCurrency,
+            shouldAuthenticate
+        });
 
         // Create an async IIFE to handle authentication
         (async () => {

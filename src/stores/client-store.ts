@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable } from 'mobx';
+import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import { ContentFlag, isEmptyObject } from '@/components/shared';
 import { isEuCountry, isMultipliersOnly, isOptionsBlocked } from '@/components/shared/common/utility';
 import { removeCookies } from '@/components/shared/utils/storage/storage';
@@ -32,17 +32,57 @@ export default class ClientStore {
     is_logging_out = false;
 
     // TODO: fix with self exclusion
-    updateSelfExclusion = () => {};
+    updateSelfExclusion = () => { };
 
     private authDataSubscription: { unsubscribe: () => void } | null = null;
+    private balanceSubscription: { unsubscribe: () => void } | null = null;
+
+    subscribeToBalance = () => {
+        if (this.balanceSubscription) return;
+
+        // Ensure API is ready
+        if (!api_base?.api) {
+            console.warn('[ClientStore] API not ready for balance subscription, retrying...');
+            setTimeout(this.subscribeToBalance, 1000);
+            return;
+        }
+
+        console.log('[ClientStore] Subscribing to balance updates');
+        this.balanceSubscription = api_base.api.onMessage().subscribe(({ data }: any) => {
+            if (data?.msg_type === 'balance') {
+                console.log('[ClientStore] Balance update received:', data.balance);
+                this.setBalance(data.balance.balance);
+                this.setCurrency(data.balance.currency);
+                this.setAllAccountsBalance(data.balance.accounts);
+            }
+        });
+    };
+
+    unsubscribeBalance = () => {
+        if (this.balanceSubscription) {
+            console.log('[ClientStore] Unsubscribing from balance updates');
+            this.balanceSubscription.unsubscribe();
+            this.balanceSubscription = null;
+        }
+    };
 
     constructor() {
-        // Subscribe to auth data changes
         this.authDataSubscription = authData$.subscribe(authData => {
             if (authData?.upgradeable_landing_companies) {
                 this.setUpgradeableLandingCompanies(authData.upgradeable_landing_companies);
             }
         });
+
+        reaction(
+            () => this.is_logged_in,
+            (is_logged_in) => {
+                if (is_logged_in) {
+                    setTimeout(() => this.subscribeToBalance(), 1000); // Small delay to ensure API is ready
+                } else {
+                    this.unsubscribeBalance();
+                }
+            }
+        );
 
         makeObservable(this, {
             accounts: observable,
@@ -120,7 +160,7 @@ export default class ClientStore {
             is_current_mf || //is_currently logged in mf account via tradershub
             (financial_shortcode || gaming_shortcode || mt_gaming_shortcode
                 ? (eu_shortcode_regex.test(financial_shortcode) && gaming_shortcode !== 'svg') ||
-                  eu_shortcode_regex.test(gaming_shortcode)
+                eu_shortcode_regex.test(gaming_shortcode)
                 : eu_excluded_regex.test(this.residence))
         );
     }

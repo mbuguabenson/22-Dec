@@ -31,6 +31,7 @@ const i18nInstance = initializeI18n({
 
 // Simple Suspense wrapper without timeout that causes dark landing page
 const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => {
+    console.log('[App] Rendering SuspenseWrapper');
     return <Suspense fallback={<InitialLoader />}>{children}</Suspense>;
 };
 
