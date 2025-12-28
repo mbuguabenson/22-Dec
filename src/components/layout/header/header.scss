@@ -10,14 +10,45 @@
     &__account-settings,
     .notifications__wrapper,
     &__menu {
-        svg > path,
-        svg > g > path {
+
+        svg>path,
+        svg>g>path {
             fill: var(--text-prominent);
         }
     }
 
     position: relative;
     z-index: 999;
+
+    .header-branding {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-right: 1.5rem;
+
+        .brand-details {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            line-height: 1.1;
+
+            .brand-title {
+                font-family: 'Outfit', sans-serif;
+                font-weight: 700;
+                font-size: 1.1rem;
+                color: var(--text-prominent);
+                letter-spacing: -0.5px;
+            }
+
+            .brand-subtitle {
+                font-size: 0.6rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: var(--text-general);
+                opacity: 0.8;
+            }
+        }
+    }
 }
 
 .account-switcher {
@@ -130,7 +161,7 @@
             box-shadow: 0 0 2px 0 var(--du-shadow-box, #00000014);
         }
 
-        .deriv-account-switcher__balance + svg > path {
+        .deriv-account-switcher__balance+svg>path {
             fill: var(--text-general);
         }
 

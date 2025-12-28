@@ -192,7 +192,13 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
             })}
         >
             <Wrapper variant='left'>
-                <AppLogo />
+                <div className='header-branding'>
+                    <AppLogo />
+                    <div className='brand-details'>
+                        <span className='brand-title'>Profithub</span>
+                        <span className='brand-subtitle'>Powered by Deriv</span>
+                    </div>
+                </div>
                 <MobileMenu />
                 {isDesktop && <MenuItems.TradershubLink />}
                 {isDesktop && <MenuItems />}

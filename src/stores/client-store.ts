@@ -74,10 +74,11 @@ export default class ClientStore {
         });
 
         reaction(
-            () => this.is_logged_in,
-            (is_logged_in) => {
-                if (is_logged_in) {
-                    setTimeout(() => this.subscribeToBalance(), 1000); // Small delay to ensure API is ready
+            () => this.loginid,
+            (loginid) => {
+                if (loginid) {
+                    this.unsubscribeBalance(); // Unsubscribe from previous account if any
+                    setTimeout(() => this.subscribeToBalance(), 1000); // Subscribe for new account
                 } else {
                     this.unsubscribeBalance();
                 }
