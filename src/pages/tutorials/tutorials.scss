@@ -65,102 +65,118 @@
             display: flex;
             margin-top: 2.4rem;
             max-width: 80vw;
-            overflow: auto;
+            overflow-x: auto;
+            padding: 2.4rem 1.2rem;
+            gap: 2.4rem;
+            scroll-behavior: smooth;
+
+            &::-webkit-scrollbar {
+                height: 6px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background: var(--border-normal);
+                border-radius: 3px;
+            }
 
             @include mobile-or-tablet-screen {
-                display: unset;
+                display: flex;
+                flex-direction: column;
+                max-width: 100%;
+                padding: 1.2rem;
             }
-        }
-
-        &__title {
-            @include mobile-or-tablet-screen {
-                margin-bottom: 1.4rem;
-            }
-        }
-
-        &__nosearch {
-            @extend .no-search;
         }
 
         &__cards {
             display: flex;
             text-align: center;
             flex-direction: column;
-            margin-inline-end: 2.4rem;
+            background: var(--general-section-1);
+            border-radius: 16px;
+            padding: 2rem;
+            min-width: 28rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border-normal);
+            position: relative;
+            overflow: hidden;
+
+            &:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+                border-color: var(--brand-red-coral);
+
+                .tutorials-wrap__placeholder__button-group {
+                    background-color: var(--brand-red-coral);
+                    transform: scale(1.05);
+                }
+            }
 
             @include mobile-or-tablet-screen {
                 flex-direction: row;
-                width: auto;
-
-                span {
-                    text-align: start;
-                    width: 100%;
-                }
+                width: 100%;
+                margin: 0 0 1.6rem 0;
+                align-items: center;
+                text-align: left;
+                padding: 1.2rem;
             }
-        }
-
-        @include mobile-or-tablet-screen {
-            flex-direction: column;
-            margin-bottom: 2.2rem;
         }
     }
 
     &__placeholder {
         @include flex-center;
-
-        background: var(--checkbox-disabled-grey);
-        margin-bottom: 0.8rem;
+        background: var(--general-hover);
+        margin-bottom: 1.6rem;
         height: 16rem;
-        width: 28rem;
-        background-size: 100% 100%;
+        width: 100%;
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
 
         &__description {
-            width: 28rem;
+            width: 100%;
+            padding: 0 0.8rem;
 
             @include mobile-or-tablet-screen {
-                text-align: start;
-                width: calc(100% - 14.8rem);
+                flex: 1;
+                padding-left: 1.2rem;
             }
         }
 
-        @include mobile-or-tablet-screen {
-            height: 8.7rem;
-            width: 14.8rem;
-            margin: 0 0.8rem 0.8rem 0;
-        }
-
         &__tours {
-            height: 13.5rem;
-            background-size: contain;
-            margin: 0 0.8rem 0.8rem 0;
-            width: 21.5rem;
+            height: 100%;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
             cursor: pointer;
+            transition: transform 0.5s ease;
 
-            @include mobile-or-tablet-screen {
-                height: 8.7rem;
-                width: 14.8rem;
+            &:hover {
+                transform: scale(1.05);
             }
         }
 
         &__button-group {
             @include flex-center;
-
-            padding: 1.6rem 3.2rem;
-            border-radius: 1rem;
+            position: absolute;
+            bottom: 1.2rem;
+            right: 1.2rem;
+            padding: 1rem 2rem;
+            border-radius: 8px;
             cursor: pointer;
-            background-color: rgb(0 0 0 / 50%);
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+            z-index: 2;
 
             &--play {
                 filter: invert(1);
+                margin-right: 0.8rem;
             }
-
-            @include mobile-or-tablet-screen {
-                padding: 0.8rem 1.6rem;
-            }
-        }
-
-        &--disabled {
-            pointer-events: none;
         }
     }
 }
@@ -499,6 +515,7 @@
 
     &__search {
         @include mobile-or-tablet-screen {
+
             .tutorials-wrap,
             .faq__wrapper {
                 overflow: unset;

@@ -38,29 +38,46 @@ const DashboardComponent = observer(({ handleTabChange }: TMobileIconGuide) => {
                                 'tab__dashboard__header--listed': isDesktop && has_dashboard_strategies,
                             })}
                         >
-                            {!has_dashboard_strategies && (
-                                <Text
-                                    className='title'
-                                    as='h2'
-                                    color='prominent'
-                                    size={isDesktop ? 'sm' : 's'}
-                                    lineHeight='xxl'
-                                    weight='bold'
-                                >
-                                    {localize('Load or build your bot')}
-                                </Text>
-                            )}
-                            <Text
-                                as='p'
-                                color='prominent'
-                                lineHeight='s'
-                                size={isDesktop ? 's' : 'xxs'}
-                                className={classNames('subtitle', { 'subtitle__has-list': has_dashboard_strategies })}
-                            >
-                                {localize(
-                                    'Import a bot from your computer or Google Drive, build it from scratch, or start with a quick strategy.'
-                                )}
-                            </Text>
+                            <div className='tab__dashboard__header-content'>
+                                <div className='tab__dashboard__header-text'>
+                                    {!has_dashboard_strategies && (
+                                        <Text
+                                            className='title'
+                                            as='h2'
+                                            color='prominent'
+                                            size={isDesktop ? 'sm' : 's'}
+                                            lineHeight='xxl'
+                                            weight='bold'
+                                        >
+                                            {localize('Load or build your bot')}
+                                        </Text>
+                                    )}
+                                    <Text
+                                        as='p'
+                                        color='prominent'
+                                        lineHeight='s'
+                                        size={isDesktop ? 's' : 'xxs'}
+                                        className={classNames('subtitle', { 'subtitle__has-list': has_dashboard_strategies })}
+                                    >
+                                        {localize(
+                                            'Import a bot from your computer or Google Drive, build it from scratch, or start with a quick strategy.'
+                                        )}
+                                    </Text>
+                                </div>
+                                <div className='tab__dashboard__header-action'>
+                                    <button
+                                        className='dc-btn dc-btn--primary dc-btn__large'
+                                        onClick={() => {
+                                            load_modal.toggleLoadModal();
+                                            dashboard.setActiveTab(1); // Switch to Bot Builder where LoadModal is rendered
+                                        }}
+                                    >
+                                        <Text size='xs' weight='bold' color='colored-background'>
+                                            {localize('Load Bot')}
+                                        </Text>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <Cards has_dashboard_strategies={has_dashboard_strategies} is_mobile={!isDesktop} />
                     </div>
