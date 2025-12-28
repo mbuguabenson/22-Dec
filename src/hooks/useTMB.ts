@@ -57,6 +57,17 @@ const useTMB = (): UseTMBReturn => {
     );
     const currentDomain = useMemo(() => window.location.hostname.split('.').slice(-2).join('.'), []);
 
+    // Check if domain supports TMB (only specific Deriv domains)
+    const isTMBSupportedDomain = useMemo(() => {
+        const hostname = window.location.hostname;
+        const supportedDomains = ['deriv.com', 'deriv.be', 'deriv.me', 'deriv.dev', 'localhost'];
+        const isSupported = supportedDomains.some(domain => hostname.includes(domain));
+        if (!isSupported) {
+            console.log(`[TMB] Domain ${hostname} not supported for TMB, will use standard OAuth2`);
+        }
+        return isSupported;
+    }, []);
+
     const is_staging = useMemo(() => window.location.hostname.includes('staging'), []);
     const is_production = useMemo(() => !is_staging, [is_staging]);
     const isOAuth2Enabled = useMemo(() => is_production || is_staging, [is_production, is_staging]);
@@ -68,6 +79,12 @@ const useTMB = (): UseTMBReturn => {
     const activeSessionsRef = useRef<TMBWebsocketTokens | undefined>(undefined);
 
     const getActiveSessions = useCallback(async (): Promise<TMBWebsocketTokens | undefined> => {
+        // Skip TMB check for non-whitelisted domains (e.g., Vercel deployments)
+        if (!isTMBSupportedDomain) {
+            console.log('[TMB] Skipping active sessions check for non-supported domain');
+            return undefined;
+        }
+
         try {
             const configServerUrl = localStorage.getItem('config.server_url');
             if (configServerUrl) {
@@ -143,7 +160,7 @@ const useTMB = (): UseTMBReturn => {
             console.error('Failed to get active sessions:', error);
             return undefined;
         }
-    }, []);
+    }, [isTMBSupportedDomain]);
 
     const processTokens = useCallback((tokens: TokenItem[]) => {
         const accountsList: Record<string, string> = {};
@@ -168,6 +185,14 @@ const useTMB = (): UseTMBReturn => {
     const tmbStatusPromiseRef = useRef<Promise<boolean> | null>(null);
 
     const isTmbEnabled = useCallback(async () => {
+        // If domain doesn't support TMB, return false immediately
+        if (!isTMBSupportedDomain) {
+            window.is_tmb_enabled = false;
+            setIsTmbEnabled(false);
+            tmbStatusDeterminedRef.current = true;
+            return false;
+        }
+
         // If we've already determined the status, return the cached value
         if (tmbStatusDeterminedRef.current) {
             return window.is_tmb_enabled === true;
@@ -240,7 +265,7 @@ const useTMB = (): UseTMBReturn => {
         })();
 
         return tmbStatusPromiseRef.current;
-    }, [is_staging]);
+    }, [isTMBSupportedDomain, is_staging]);
 
     // Initialize the hook and check TMB status - only run once
     useEffect(() => {
