@@ -141,6 +141,8 @@ const useTMB = (): UseTMBReturn => {
                 sessionsUrl = 'https://oauth.deriv.me/oauth2/sessions/active';
             } else if (hostname.includes('.deriv.be')) {
                 sessionsUrl = 'https://oauth.deriv.be/oauth2/sessions/active';
+            } else if (hostname === 'localhost') {
+                sessionsUrl = '/oauth2/sessions/active';
             }
 
             const response = await fetch(sessionsUrl, {

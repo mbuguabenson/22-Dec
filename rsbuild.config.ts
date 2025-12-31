@@ -94,6 +94,12 @@ export default defineConfig({
             'Cross-Origin-Opener-Policy': 'unsafe-none',
             'Cross-Origin-Embedder-Policy': 'unsafe-none',
         },
+        proxy: {
+            '/oauth2': {
+                target: 'https://oauth.deriv.com',
+                changeOrigin: true,
+            },
+        },
     },
     dev: {
         hmr: true,
